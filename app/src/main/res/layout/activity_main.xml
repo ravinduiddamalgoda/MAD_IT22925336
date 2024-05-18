@@ -5,24 +5,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="me.sunera.taskSet.MainActivity">
     <!-- Specify the context in which the layout being used-->
-
-    <TextView
-        android:id="@+id/notesHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/poppins_light"
-        android:text="Notes"
-        android:layout_marginStart="18dp"
-        android:textColor="@color/orange"
-        android:textSize="24sp"
-        />
 
     <!-- RecyclerView UI component used in Android development to
      efficiently display large datasets in a scrollable list or grid layout-->
+
+    <TextView
+        android:id="@+id/tasksHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="0dp"
+        android:fontFamily="@font/poppins_light"
+        android:text="Welcome To Todo App"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="28dp" />
+
     <androidx.recyclerview.widget.RecyclerView
 
         android:id="@+id/notesRecyclerView"
@@ -36,16 +40,16 @@
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="60dp"
-        android:layout_marginEnd="8dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="1dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="31dp"
+        android:backgroundTint="@color/theme"
         android:src="@drawable/baseline_add_24"
         android:tint="@color/white"
-       android:backgroundTint="@color/orange" />
-
+        tools:ignore="SpeakableTextPresentCheck" />
 
 
 </RelativeLayout>

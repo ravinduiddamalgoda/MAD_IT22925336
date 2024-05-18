@@ -1,38 +1,57 @@
-package com.example.taskmangamentapp
+package me.sunera.taskSet
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.taskmangamentapp.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import me.sunera.taskSet.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityMainBinding
-    private lateinit var db:NoteDatabase
-    private lateinit var notesAdapter: NotesAdapter
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var db: TaskDatabase
+    private lateinit var tasksAdapter: TasksAdapter
+    private val scope = CoroutineScope(Dispatchers.Main + Job())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        db = NoteDatabase(this)
-        notesAdapter= NotesAdapter(db.getAllNotes(),this)
+        tasksAdapter = TasksAdapter(mutableListOf(),this)
 
-        binding.notesRecyclerView.layoutManager=LinearLayoutManager(this)
-        binding.notesRecyclerView.adapter=notesAdapter
+        db = TaskDatabase.getDatabase(this)
+        binding.notesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.notesRecyclerView.adapter = tasksAdapter
 
-        binding.addButton.setOnClickListener{
-            val intent =Intent(this,AddNoteActivity::class.java)
+        scope.launch {
+            val tasks = withContext(Dispatchers.IO) { db.taskDao().getAllTasks() }
+            tasksAdapter.refreshData(tasks)
+        }
+
+        binding.addButton.setOnClickListener {
+            val intent = Intent(this, AddTaskActivity::class.java)
             startActivity(intent)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        notesAdapter.refreshData(db.getAllNotes())
+        val taskDao = db.taskDao()
+        scope.launch {
+            val tasks = withContext(Dispatchers.IO) { db.taskDao().getAllTasks() }
+            tasksAdapter.refreshData(tasks)
+        }
+
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
+    }
 }
